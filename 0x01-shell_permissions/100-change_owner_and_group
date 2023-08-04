@@ -1,1 +1,2 @@
 sudo find . -exec chown vincent:staff {} +
+sudo find . -exec chown vincent:staff {} +
