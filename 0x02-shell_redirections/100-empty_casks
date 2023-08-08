@@ -1,2 +1,2 @@
 #!/bin/bash
-find . -type d -empty -print -o -type f -empty -print | sed 's#.*/##' | sed '/^\s*$/d'
+find . \( -type d -empty -exec basename {} \; \) , \( -type f -empty -exec basename {} \; \)
