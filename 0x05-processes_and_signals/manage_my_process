@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#manage processes
+pid_file="/var/run/my_process.pid"
+output_file="/tmp/my_process"
+
+# Function to clean up and terminate the process
+cleanup_and_exit() {
+    rm -f "$pid_file"
+    echo "Stopped"
+    exit 0
+}
+
+# Register cleanup_and_exit function for SIGQUIT and SIGTERM signals
+trap 'cleanup_and_exit' SIGQUIT SIGTERM
+
+# Create PID file
+echo $$ > "$pid_file"
+
+# Infinite loop writing to the output file
+while true; do
+    echo "I am alive!" >> "$output_file"
+    sleep 2
+done
