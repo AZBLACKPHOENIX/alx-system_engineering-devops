@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#6--7
+pid=$(pgrep -f "7-highlander")
+
+# Terminate the process
+if [ -n "$pid" ]; then
+  echo "Stopping the process..."
+  kill "$pid"
+else
+  echo "Process not found."
+fi
