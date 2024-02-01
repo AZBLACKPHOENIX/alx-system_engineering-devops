@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Script to configure an Ubuntu server with specific IP resolutions
+
+# Change localhost to 127.0.0.2 and facebook.com to 8.8.8.8 in /etc/hosts
+sudo sed -i 's/127.0.0.1 localhost/127.0.0.2 localhost/' /etc/hosts
+sudo sed -i 's/facebook.com/8.8.8.8/' /etc/hosts
