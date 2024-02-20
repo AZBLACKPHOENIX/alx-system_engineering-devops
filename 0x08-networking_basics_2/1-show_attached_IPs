@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# Script to display all active IPv4 IPs
-
-# Use ifconfig to display all active IPv4 IPs
-ifconfig | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+' | sort
