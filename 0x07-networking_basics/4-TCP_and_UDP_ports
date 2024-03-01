@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Display listening sockets with PID and program name
+
+# Get listening sockets and their details
+sockets=$(netstat -tuln | grep 'LISTEN')
+
+# Print header
+echo "Active Internet connections (only servers)"
+echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
+
+# Loop through each socket
+while IFS= read -r line; do
+    # Extract protocol, local address, and PID
+    proto=$(echo "$line" | awk '{print $1}')
+    local_address=$(echo "$line" | awk '{print $4}')
+    pid=$(echo "$line" | awk '{print $NF}' | cut -d'/' -f1)
+    
+    # Get program name associated with PID
+    program=$(ps -p $pid -o comm=)
+    
+    # Print socket details
+    echo "$proto        $local_address             LISTEN      $pid/$program"
+done <<< "$sockets"
