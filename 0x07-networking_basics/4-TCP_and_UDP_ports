@@ -2,23 +2,24 @@
 
 # Display listening sockets with PID and program name
 
-# Get listening sockets and their details
-sockets=$(netstat -tuln | grep 'LISTEN')
-
 # Print header
 echo "Active Internet connections (only servers)"
 echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
 
-# Loop through each socket
-while IFS= read -r line; do
-    # Extract protocol, local address, and PID
-    proto=$(echo "$line" | awk '{print $1}')
-    local_address=$(echo "$line" | awk '{print $4}')
-    pid=$(echo "$line" | awk '{print $NF}' | cut -d'/' -f1)
-    
-    # Get program name associated with PID
-    program=$(ps -p $pid -o comm=)
-    
-    # Print socket details
-    echo "$proto        $local_address             LISTEN      $pid/$program"
-done <<< "$sockets"
+# Get listening TCP sockets and their details
+ss -tlnp | awk '$1 == "LISTEN" {print $1,$5,$7}' | awk -F '[,=: ]+' '$1=="tcp" {print $1,$2,$NF}' | while read -r proto local_address pid_program; do
+    # Extract PID and program name
+    pid=$(echo "$pid_program" | cut -d'/' -f1)
+    program=$(echo "$pid_program" | cut -d'/' -f2-)
+    # Print TCP socket details
+    echo "tcp        -      - $local_address         -       LISTEN      $pid/$program"
+done
+
+# Get listening UDP sockets and their details
+ss -ulnp | awk '$1 == "UNCONN" {print $1,$5,$6}' | awk -F '[,=: ]+' '$1=="udp" {print $1,$2,$NF}' | while read -r proto local_address pid_program; do
+    # Extract PID and program name
+    pid=$(echo "$pid_program" | cut -d'/' -f1)
+    program=$(echo "$pid_program" | cut -d'/' -f2-)
+    # Print UDP socket details
+    echo "udp        -      - $local_address         -                     $pid/$program"
+done
